@@ -1,0 +1,145 @@
+CREATE TRIGGER trg_InsertUsuario
+ON Usuarios
+AFTER INSERT
+AS
+BEGIN
+
+    INSERT INTO LogsUsuarios (
+        UsuarioAfectado,
+        Accion,
+        Descripcion
+    )
+    SELECT
+        DNI,
+        'INSERT',
+        CONCAT('Se creó el usuario ', Nombre)
+    FROM inserted;
+
+END;
+GO
+
+
+CREATE TRIGGER trg_UpdateUsuario
+ON Usuarios
+AFTER UPDATE
+AS
+BEGIN
+
+    INSERT INTO LogsUsuarios (
+        UsuarioAfectado,
+        Accion,
+        Descripcion
+    )
+    SELECT
+        i.DNI,
+        'UPDATE',
+        CONCAT(
+            'Usuario actualizado de ',
+            d.Nombre,
+            ' a ',
+            i.Nombre
+        )
+    FROM inserted i
+    INNER JOIN deleted d
+        ON i.DNI = d.DNI;
+
+END;
+GO
+
+
+CREATE TRIGGER trg_InsertPerfil
+ON PerfilesDeAcceso
+AFTER INSERT
+AS
+BEGIN
+
+    INSERT INTO LogsPerfiles (
+        PerfilAfectado,
+        Accion,
+        Descripcion
+    )
+    SELECT
+        CodigoPerfil,
+        'INSERT',
+        CONCAT('Se creó el perfil ', Descripcion)
+    FROM inserted;
+
+END;
+GO
+
+
+CREATE TRIGGER trg_UpdatePerfil
+ON PerfilesDeAcceso
+AFTER UPDATE
+AS
+BEGIN
+
+    INSERT INTO LogsPerfiles (
+        PerfilAfectado,
+        Accion,
+        Descripcion
+    )
+    SELECT
+        i.CodigoPerfil,
+        'UPDATE',
+        CONCAT(
+            'Perfil actualizado de ',
+            d.Descripcion,
+            ' a ',
+            i.Descripcion
+        )
+    FROM inserted i
+    INNER JOIN deleted d
+        ON i.CodigoPerfil = d.CodigoPerfil;
+
+END;
+GO
+
+
+CREATE TRIGGER trg_InsertVentana
+ON Ventanas
+AFTER INSERT
+AS
+BEGIN
+
+    INSERT INTO LogsVentanas (
+        VentanaAfectada,
+        Accion,
+        Descripcion
+    )
+    SELECT
+        CodigoVentana,
+        'INSERT',
+        CONCAT('Se creó la ventana ', Descripcion)
+    FROM inserted;
+
+END;
+GO
+
+
+CREATE TRIGGER trg_UpdateVentana
+ON Ventanas
+AFTER UPDATE
+AS
+BEGIN
+
+    INSERT INTO LogsVentanas (
+        VentanaAfectada,
+        Accion,
+        Descripcion
+    )
+    SELECT
+        i.CodigoVentana,
+        'UPDATE',
+        CONCAT(
+            'Ventana actualizada de ',
+            d.Descripcion,
+            ' a ',
+            i.Descripcion
+        )
+    FROM inserted i
+    INNER JOIN deleted d
+        ON i.CodigoVentana = d.CodigoVentana;
+
+END;
+GO
